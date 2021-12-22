@@ -11,7 +11,7 @@ EPOCHS = 300
 LEARNING_RATE = 5e-4
 BATCH_SIZE = 20
 
-y_label = 'MntMeatProducts'
+y_label = 'MntGoldProds'
 x, y = get_basic_information_and_y(y_label)
 x_train, x_test, y_train, y_test = train_test_split(x,y, train_size=0.9, random_state=321)
 
@@ -81,17 +81,41 @@ plt.show()
 '''
 fake data
 '''
-fake_data = np.tile(x[0], (61, 1))
-print(x[0])
+# 20-80 61个年龄段 10k-80k 8个income段
+fake_data = np.tile(x[0], (61*8 ,1))
+print(f'使用的假数据: {x[0]}')
 
-for index, age in enumerate(np.linspace(20, 80, 61)):
-    fake_data[index, 5] = age
+income_range = np.linspace(1e4,8e4,8)
+age_range = np.linspace(20, 80, 61)
+
+for index_outer, income in enumerate(income_range):
+    for index_inner, age in enumerate(age_range):
+        index = index_outer * 61 + index_inner
+        fake_data[index, 5] = age
+        fake_data[index, 0] = income
 
 fake_data_pred = pipeline_predict(fake_data)
+np.save('fake_data_pred.npy',fake_data_pred)
+np.save('fake_data.npy', fake_data)
+# fake_data_income = fake_data[:,5].flatten()
+# MntWinePrediciton = fake_data_pred.flatten()
+# plt.plot(fake_data_income, MntWinePrediciton)
+# plt.xlabel('age')
+# plt.ylabel(y_label)
+# plt.show()
 
-fake_data_income = fake_data[:,5].flatten()
-MntWinePrediciton = fake_data_pred.flatten()
-plt.plot(fake_data_income, MntWinePrediciton)
-plt.xlabel('age')
-plt.ylabel(y_label)
+
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+for index ,income in enumerate(np.linspace(1e4,8e4,8)):
+    xs_age = fake_data[index*61:(index+1)*61, 5].flatten()
+    ys_MntPred = fake_data_pred[index*61:(index+1)*61].flatten()
+
+    ax.plot(xs_age, ys_MntPred, zs=income, zdir='y')
+
+ax.set_xlabel('Age')
+ax.set_ylabel('Income')
+ax.set_zlabel('Amount')
+ax.set_title('Money spent on gold products Prediction')
+ax.view_init(azim=-75,elev=12)
 plt.show()
