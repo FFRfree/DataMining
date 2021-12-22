@@ -5,10 +5,6 @@ import numpy as np
 Read Data
 '''
 df1 = pd.read_csv('marketing_campaign.csv')
-corr = df1.corr()
-df1 = df1.dropna()
-df1 = df1.reset_index(drop=True)
-available_rows = df1.shape[0]
 
 '''
 Remove Outliers
@@ -18,8 +14,9 @@ df1 = df1.drop(df1[df1['Income']>150000].index)
 df1 = df1.drop(df1[df1['MntMeatProducts']>1000].index)
 df1 = df1.drop(df1[df1['MntSweetProducts']>200].index)
 df1= df1.drop(df1[df1['MntGoldProds']>260].index)
-
-
+df1 = df1.dropna()
+df1 = df1.reset_index(drop=True)
+available_rows = df1.shape[0]
 '''
 New column: age
 '''
