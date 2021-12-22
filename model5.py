@@ -32,7 +32,7 @@ y_scaled = y_scaler.fit_transform(y_train)
 model = keras.Sequential([
         # keras.layers.Dense(7, activation='relu', input_shape=(17,), kernel_regularizer='l1_l2'),
         # keras.layers.BatchNormalization(1,),
-        keras.layers.Dense(3, activation='relu', kernel_regularizer='l1_l2',input_shape=(17,)),
+        keras.layers.Dense(3, activation='relu', kernel_regularizer='l1_l2',input_shape=(16,)),
         # keras.layers.Dropout(0.2),
         keras.layers.Dense(1)
     ])
@@ -66,6 +66,7 @@ def pipeline_predict(x):
 y_test_pred = pipeline_predict(x_test)
 
 print(f'MSE: {sklearn.metrics.mean_squared_error(y_test, y_test_pred)}')
+print(f'R^2: {sklearn.metrics.r2_score(y_test, y_test_pred)})')
 
 y_test =y_test.flatten()
 y_pred = y_test_pred.flatten()

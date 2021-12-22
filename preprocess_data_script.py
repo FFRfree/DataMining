@@ -2,14 +2,24 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 '''
-Data preprocess
+Read Data
 '''
 df1 = pd.read_csv('marketing_campaign.csv')
 corr = df1.corr()
 df1 = df1.dropna()
 df1 = df1.reset_index(drop=True)
-
 available_rows = df1.shape[0]
+
+'''
+Remove Outliers
+df1['Income']>150000 & df1['MntMeatProducts']>1000 & df1['MntSweetProducts']>200 & df1['MntGoldProds']>260
+'''
+df1 = df1.drop(df1[df1['Income']>150000].index)
+df1 = df1.drop(df1[df1['MntMeatProducts']>1000].index)
+df1 = df1.drop(df1[df1['MntSweetProducts']>200].index)
+df1= df1.drop(df1[df1['MntGoldProds']>260].index)
+
+
 '''
 New column: age
 '''
@@ -46,7 +56,7 @@ for index ,status in enumerate(df1.Education):
 '''
 Assemble basic information
 '''
-data = df1[['Income','Kidhome', 'Teenhome', 'MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds', 'Complain']]
+data = df1[['Income','Kidhome', 'Teenhome', 'MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']]
 data = pd.concat([data, age, Days_since_enroll_with, one_hot_martial_staus, one_hot_Education],axis=1)
 
 data.to_csv('basic_info.csv',index=False)
